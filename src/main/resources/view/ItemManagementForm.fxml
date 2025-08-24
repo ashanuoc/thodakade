@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="435.0" prefWidth="707.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ItemFormController">
+   <children>
+      <TableView fx:id="tblItemManagement" layoutX="74.0" layoutY="79.0" prefHeight="278.0" prefWidth="560.0">
+        <columns>
+          <TableColumn fx:id="colItemCode" prefWidth="75.0" text="Code" />
+          <TableColumn fx:id="colDescription" prefWidth="217.0" text="Description" />
+            <TableColumn fx:id="colPackSize" prefWidth="88.0" text="PackSize" />
+            <TableColumn fx:id="colUnitPrice" prefWidth="89.0" text="UnitPrice" />
+            <TableColumn fx:id="colQtyOnHand" prefWidth="90.0" text="QtyOnHand" />
+        </columns>
+      </TableView>
+      <Label layoutX="248.0" layoutY="20.0" text="Item Management">
+         <font>
+            <Font size="26.0" />
+         </font>
+      </Label>
+      <ButtonBar layoutX="143.0" layoutY="364.0" prefHeight="40.0" prefWidth="421.0">
+        <buttons>
+            <JFXButton fx:id="btinView" buttonType="RAISED" onAction="#btinViewOnAction" text="VIEW">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="btnAdd" buttonType="RAISED" onAction="#btnAddOnAction" text="ADD">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="btnUpdate" buttonType="RAISED" onAction="#btnUpdateOnAction" prefHeight="35.0" prefWidth="105.0" text="UPDATE">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="btnDelete" buttonType="RAISED" onAction="#btnDeleteOnAction" prefHeight="35.0" prefWidth="134.0" text="DELETE">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </JFXButton>
+        </buttons>
+      </ButtonBar>
+   </children>
+</AnchorPane>
