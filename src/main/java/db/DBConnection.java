@@ -10,7 +10,7 @@ public class DBConnection {
     private static DBConnection instance;
 
     private DBConnection() throws SQLException {
-        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_reservation","root","1234");
+        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/thogakade", "root", "1234");
     }
 
     public static DBConnection getInstance() throws SQLException {

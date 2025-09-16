@@ -22,7 +22,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class CustomerFormController implements Initializable {
+public class CustomerManagmentFormController implements Initializable {
 
     @FXML
     private JFXButton btinView;
