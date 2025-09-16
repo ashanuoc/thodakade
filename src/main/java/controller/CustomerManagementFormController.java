@@ -17,12 +17,17 @@ import model.dto.Customer;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class CustomerManagmentFormController implements Initializable {
+public class CustomerManagementFormController implements Initializable {
+
+    CustomerManagementService customerManagementService = new CustomerManagementController();
 
     @FXML
     private JFXButton btinView;
@@ -68,36 +73,15 @@ public class CustomerManagmentFormController implements Initializable {
 
     private Stage addCustStage = new Stage();
 
+    private void loadCustomers(){
+        ObservableList<Customer> customers = FXCollections.observableArrayList();
+        customers = customerManagementService.getAllCustomerDetails();
+        tblCustomerManagement.setItems(customers);
+    }
     @FXML
     void btinViewOnAction(ActionEvent event) {
-        ObservableList<Customer> customers = FXCollections.observableArrayList();
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/thogakade", "root", "1234");
 
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM customer");
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()){
-                Customer customer = new Customer(
-                        resultSet.getString("custID"),
-                        resultSet.getString("title"),
-                        resultSet.getString("name"),
-                        resultSet.getDate("dob").toLocalDate(),
-                        resultSet.getDouble("salary"),
-                        resultSet.getString("address"),
-                        resultSet.getString("city"),
-                        resultSet.getString("province"),
-                        resultSet.getString("postalCode")
-
-                );
-
-                customers.add(customer);
-                tblCustomerManagement.setItems(customers);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
+        loadCustomers();
     }
 
     @FXML
@@ -121,24 +105,12 @@ public class CustomerManagmentFormController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
-
-            try {
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/thogakade", "root", "1234");
-
-                PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM customer  WHERE custID=?");
-
-                preparedStatement.setString(1, selected.getCustID());
-
-                int rows = preparedStatement.executeUpdate();
-                if (rows > 0) {
-                    new Alert(Alert.AlertType.INFORMATION, "Record Deleted.").showAndWait();
-                    tblCustomerManagement.refresh(); // optional
-                } else {
-                    new Alert(Alert.AlertType.WARNING, "Nothing Deleted.").showAndWait();
-                }
-
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+            int rows = customerManagementService.deleteCustomer(selected);
+            if (rows > 0) {
+                new Alert(Alert.AlertType.INFORMATION, "Record Deleted.").showAndWait();
+                loadCustomers(); // optional
+            } else {
+                new Alert(Alert.AlertType.WARNING, "Nothing Deleted.").showAndWait();
             }
         }
 
@@ -170,7 +142,8 @@ public class CustomerManagmentFormController implements Initializable {
             int rows = preparedStatement.executeUpdate();
             if (rows > 0) {
                 new Alert(Alert.AlertType.INFORMATION, "Saved to database.").showAndWait();
-                tblCustomerManagement.refresh(); // optional
+//                tblCustomerManagement.refresh(); // optional
+                loadCustomers();
             } else {
                 new Alert(Alert.AlertType.WARNING, "Nothing updated.").showAndWait();
             }
