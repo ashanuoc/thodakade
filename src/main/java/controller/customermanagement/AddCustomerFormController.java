@@ -1,4 +1,4 @@
-package controller;
+package controller.customermanagement;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -7,12 +7,15 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import model.dto.Customer;
 
 import java.net.URL;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 public class AddCustomerFormController implements Initializable {
+    public AddCustomerService addCustomerService = new AddCustomerController();
     private String  custID;
 
     @FXML
@@ -49,24 +52,20 @@ public class AddCustomerFormController implements Initializable {
 
     @FXML
     void btnAddItemOnAction(ActionEvent event) {
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/thogakade", "root", "1234");
 
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO customer " +
-                    "(custID, title, name, dob, salary, address, city, province, postalCode) " +
-                    "VALUES (?,?,?,?,?,?,?,?,?)");
+            Customer customer = new Customer(custID,
+                    txtTitle.getText(),
+                    txtName.getText(),
+                    LocalDate.parse(txtDob.getText()),
+                    Double.parseDouble(txtSalary.getText()),
+                    txtAddress.getText(),
+                    txtCity.getText(),
+                    txtProvince.getText(),
+                    txtPostalCode.getText()
+            );
 
-            preparedStatement.setObject(1, custID);
-            preparedStatement.setObject(2, txtTitle.getText());
-            preparedStatement.setObject(3, txtName.getText());
-            preparedStatement.setObject(4, txtDob.getText());
-            preparedStatement.setObject(5, Double.parseDouble(txtSalary.getText()));
-            preparedStatement.setObject(6, txtAddress.getText());
-            preparedStatement.setObject(7, txtCity.getText());
-            preparedStatement.setObject(8, txtProvince.getText());
-            preparedStatement.setObject(9, txtPostalCode.getText());
 
-            int rows = preparedStatement.executeUpdate();
+            int rows = addCustomerService.addCustomer(customer);
             if (rows > 0) {
                 new Alert(Alert.AlertType.INFORMATION, "Item added successfully").showAndWait();
                 custID = "C"+ String.format("%03d", Integer.parseInt(custID.substring(1)) + 1);
@@ -83,9 +82,6 @@ public class AddCustomerFormController implements Initializable {
                 new Alert(Alert.AlertType.WARNING, "Couldn’t add the item.").showAndWait();
             }
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
