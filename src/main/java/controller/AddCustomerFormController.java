@@ -12,7 +12,7 @@ import java.net.URL;
 import java.sql.*;
 import java.util.ResourceBundle;
 
-public class AddCustomerController implements Initializable {
+public class AddCustomerFormController implements Initializable {
     private String  custID;
 
     @FXML

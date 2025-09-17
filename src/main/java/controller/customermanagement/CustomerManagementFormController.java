@@ -1,4 +1,4 @@
-package controller;
+package controller.customermanagement;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.collections.FXCollections;
@@ -17,10 +17,6 @@ import model.dto.Customer;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -123,23 +119,7 @@ public class CustomerManagementFormController implements Initializable {
             new Alert(Alert.AlertType.WARNING, "Please select a row to update.").showAndWait();
             return;
         }
-
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/thogakade", "root", "1234");
-
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE customer SET title=?, name=?, dob=?, salary=?, address=?, city=?, province=?, postalCode=? WHERE custID=?");
-
-            preparedStatement.setString(1, selected.getTitle());
-            preparedStatement.setString(2, selected.getName());
-            preparedStatement.setDate(3, java.sql.Date.valueOf(selected.getDob()));
-            preparedStatement.setDouble(4, selected.getSalary());
-            preparedStatement.setString(5, selected.getAddress());
-            preparedStatement.setString(6, selected.getCity());
-            preparedStatement.setString(7, selected.getProvince());
-            preparedStatement.setString(8, selected.getPostalCode());
-            preparedStatement.setString(9, selected.getCustID());
-
-            int rows = preparedStatement.executeUpdate();
+            int rows = customerManagementService.updataCustomer(selected);
             if (rows > 0) {
                 new Alert(Alert.AlertType.INFORMATION, "Saved to database.").showAndWait();
 //                tblCustomerManagement.refresh(); // optional
@@ -148,9 +128,6 @@ public class CustomerManagementFormController implements Initializable {
                 new Alert(Alert.AlertType.WARNING, "Nothing updated.").showAndWait();
             }
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
 
     }
 

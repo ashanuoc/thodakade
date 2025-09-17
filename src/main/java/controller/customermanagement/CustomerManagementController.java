@@ -1,4 +1,4 @@
-package controller;
+package controller.customermanagement;
 
 import db.DBConnection;
 import javafx.collections.FXCollections;
@@ -50,6 +50,32 @@ public class CustomerManagementController implements CustomerManagementService{
             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM customer  WHERE custID=?");
 
             preparedStatement.setString(1, customer.getCustID());
+
+            int rows = preparedStatement.executeUpdate();
+            return rows;
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public int updataCustomer(Customer customer) {
+
+        try {
+            Connection connection = DBConnection.getInstance().getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE customer SET CustTitle=?, CustName=?, dob=?, salary=?, CustAddress=?, city=?, province=?, postalCode=? WHERE custID=?");
+//            System.out.println(customer);
+            preparedStatement.setString(1, customer.getTitle());
+            preparedStatement.setString(2, customer.getName());
+            preparedStatement.setDate(3, java.sql.Date.valueOf(customer.getDob()));
+            preparedStatement.setDouble(4, customer.getSalary());
+            preparedStatement.setString(5, customer.getAddress());
+            preparedStatement.setString(6, customer.getCity());
+            preparedStatement.setString(7, customer.getProvince());
+            preparedStatement.setString(8, customer.getPostalCode());
+            preparedStatement.setString(9, customer.getCustID());
 
             int rows = preparedStatement.executeUpdate();
             return rows;
