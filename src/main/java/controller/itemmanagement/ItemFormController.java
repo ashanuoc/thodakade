@@ -1,7 +1,6 @@
-package controller;
+package controller.itemmanagement;
 
 import com.jfoenix.controls.JFXButton;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,6 +25,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ItemFormController implements Initializable {
+
+    ItemManagementService itemManagementService = new ItemManagementController();
 
     @FXML
     private JFXButton btinView;
@@ -62,30 +63,9 @@ public class ItemFormController implements Initializable {
 
     @FXML
     void btinViewOnAction(ActionEvent event) {
-        ObservableList<Item> items = FXCollections.observableArrayList();
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/thogakade", "root", "1234");
+        ObservableList<Item> items = itemManagementService.getAllItems();
 
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Item");
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()){
-                Item item = new Item(
-                        resultSet.getString("itemCode"),
-                        resultSet.getString("description"),
-                        resultSet.getString("packSize"),
-                        resultSet.getDouble("unitPrice"),
-                        resultSet.getInt("qtyOnHand")
-
-                );
-
-                items.add(item);
-                tblItemManagement.setItems(items);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
+        tblItemManagement.setItems(items);
 
     }
 
