@@ -4,12 +4,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import model.dto.Item;
 
 import java.net.URL;
 import java.sql.*;
 import java.util.ResourceBundle;
 
-public class AddItemController implements Initializable {
+public class AddItemFormController implements Initializable {
+    ItemManagementService itemManagementService = new ItemManagementController();
 
     private String  itemCode;
 
@@ -33,38 +35,22 @@ public class AddItemController implements Initializable {
 
     @FXML
     void btnAddItemOnAction(ActionEvent event) {
+        Item item = new Item(itemCode,txtAreaDescription.getText(),
+                txtPackSize.getText(),Double.parseDouble(txtUnitPrice.getText()),Integer.parseInt(txtQtyOnHand.getText()));
 
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/thogakade", "root", "1234");
+        int rows = itemManagementService.addItem(item);
+        if (rows > 0) {
+            new Alert(Alert.AlertType.INFORMATION, "Item added successfully").showAndWait();
+            itemCode = "P"+ String.format("%03d", Integer.parseInt(itemCode.substring(1)) + 1);
+            lblItemCode.setText(itemCode);
+            txtAreaDescription.clear();
+            txtPackSize.clear();
+            txtUnitPrice.clear();
+            txtQtyOnHand.clear();
 
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO item VALUES(?,?,?,?,?)");
-
-            preparedStatement.setObject(1, itemCode);
-            preparedStatement.setObject(2, txtAreaDescription.getText());
-            preparedStatement.setObject(3, txtPackSize.getText());
-            preparedStatement.setObject(4, Double.parseDouble(txtUnitPrice.getText()));
-            preparedStatement.setObject(5, Integer.parseInt(txtQtyOnHand.getText()));
-
-            int rows = preparedStatement.executeUpdate();
-            if (rows > 0) {
-                new Alert(Alert.AlertType.INFORMATION, "Item added successfully").showAndWait();
-                itemCode = "P"+ String.format("%03d", Integer.parseInt(itemCode.substring(1)) + 1);
-                lblItemCode.setText(itemCode);
-                txtAreaDescription.clear();
-                txtPackSize.clear();
-                txtUnitPrice.clear();
-                txtQtyOnHand.clear();
-
-            } else {
-                new Alert(Alert.AlertType.WARNING, "Couldn’t add the item.").showAndWait();
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } else {
+            new Alert(Alert.AlertType.WARNING, "Couldn’t add the item.").showAndWait();
         }
-
-
-
     }
 
 
@@ -90,4 +76,6 @@ public class AddItemController implements Initializable {
         }
 
     }
+
+
 }

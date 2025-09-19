@@ -8,5 +8,7 @@ public interface ItemManagementService {
 
     public int deleteItem(Item item);
 
-    public int updataItem(Item item);
+    public int updateItem(Item item);
+
+    public int addItem(Item item);
 }

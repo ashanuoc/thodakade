@@ -71,6 +71,7 @@ public class ItemFormController implements Initializable {
         try {
             addItemStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/AddItem.fxml"))));
             addItemStage.show();
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -109,7 +110,7 @@ public class ItemFormController implements Initializable {
             new Alert(Alert.AlertType.WARNING, "Please select a row to update.").showAndWait();
         }
 
-        int rows = itemManagementService.updataItem(selected);
+        int rows = itemManagementService.updateItem(selected);
         if (rows > 0) {
             new Alert(Alert.AlertType.INFORMATION, "Saved to database.").showAndWait();
             loadItems();
