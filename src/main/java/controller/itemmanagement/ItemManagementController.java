@@ -5,7 +5,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.dto.Item;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ItemManagementController implements ItemManagementService{
 
@@ -37,5 +40,21 @@ public class ItemManagementController implements ItemManagementService{
             throw new RuntimeException(e);
         }
 
+    }
+
+    public int deleteItem(Item item) {
+        try {
+            Connection connection = DBConnection.getInstance().getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Item  WHERE itemCode=?");
+
+            preparedStatement.setString(1, item.getItemCode());
+
+            int rows = preparedStatement.executeUpdate();
+            return rows;
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

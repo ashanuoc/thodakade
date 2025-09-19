@@ -63,9 +63,7 @@ public class ItemFormController implements Initializable {
 
     @FXML
     void btinViewOnAction(ActionEvent event) {
-        ObservableList<Item> items = itemManagementService.getAllItems();
-
-        tblItemManagement.setItems(items);
+        loadItems();
 
     }
 
@@ -94,23 +92,12 @@ public class ItemFormController implements Initializable {
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
 
-            try {
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/thogakade", "root", "1234");
-
-                PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Item  WHERE itemCode=?");
-
-                preparedStatement.setString(1, selected.getItemCode());
-
-                int rows = preparedStatement.executeUpdate();
-                if (rows > 0) {
-                    new Alert(Alert.AlertType.INFORMATION, "Record Deleted.").showAndWait();
-                    tblItemManagement.refresh(); // optional
-                } else {
-                    new Alert(Alert.AlertType.WARNING, "Nothing Deleted.").showAndWait();
-                }
-
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+            int rows = itemManagementService.deleteItem(selected);
+            if (rows > 0) {
+                new Alert(Alert.AlertType.INFORMATION, "Record Deleted.").showAndWait();
+                loadItems();
+            } else {
+                new Alert(Alert.AlertType.WARNING, "Nothing Deleted.").showAndWait();
             }
         }
 
@@ -184,5 +171,11 @@ public class ItemFormController implements Initializable {
         });
 
 
+    }
+
+    private void loadItems(){
+        ObservableList<Item> items = itemManagementService.getAllItems();
+
+        tblItemManagement.setItems(items);
     }
 }

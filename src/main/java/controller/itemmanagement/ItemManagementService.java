@@ -5,4 +5,6 @@ import model.dto.Item;
 
 public interface ItemManagementService {
     public ObservableList<Item> getAllItems();
+
+    public int deleteItem(Item item);
 }
