@@ -20,7 +20,6 @@ import model.dto.Item;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.*;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -110,27 +109,12 @@ public class ItemFormController implements Initializable {
             new Alert(Alert.AlertType.WARNING, "Please select a row to update.").showAndWait();
         }
 
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/thogakade", "root", "1234");
-
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Item SET description=?, packSize=?, unitPrice=?, qtyOnHand=? WHERE itemCode=?");
-
-            preparedStatement.setString(1, selected.getDescription());
-            preparedStatement.setString(2, selected.getPackSize());
-            preparedStatement.setDouble(3, selected.getUnitPrice());
-            preparedStatement.setInt(4, selected.getQtyOnHand());
-            preparedStatement.setString(5, selected.getItemCode());
-
-            int rows = preparedStatement.executeUpdate();
-            if (rows > 0) {
-                new Alert(Alert.AlertType.INFORMATION, "Saved to database.").showAndWait();
-                tblItemManagement.refresh(); // optional
-            } else {
-                new Alert(Alert.AlertType.WARNING, "Nothing updated.").showAndWait();
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        int rows = itemManagementService.updataItem(selected);
+        if (rows > 0) {
+            new Alert(Alert.AlertType.INFORMATION, "Saved to database.").showAndWait();
+            loadItems();
+        } else {
+            new Alert(Alert.AlertType.WARNING, "Nothing updated.").showAndWait();
         }
     }
 

@@ -57,4 +57,24 @@ public class ItemManagementController implements ItemManagementService{
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public int updataItem(Item item) {
+        try {
+            Connection connection = DBConnection.getInstance().getConnection();
+
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Item SET description=?, packSize=?, unitPrice=?, qtyOnHand=? WHERE itemCode=?");
+
+            preparedStatement.setString(1, item.getDescription());
+            preparedStatement.setString(2, item.getPackSize());
+            preparedStatement.setDouble(3, item.getUnitPrice());
+            preparedStatement.setInt(4, item.getQtyOnHand());
+            preparedStatement.setString(5, item.getItemCode());
+
+            int rows = preparedStatement.executeUpdate();
+            return rows;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

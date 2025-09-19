@@ -7,4 +7,6 @@ public interface ItemManagementService {
     public ObservableList<Item> getAllItems();
 
     public int deleteItem(Item item);
+
+    public int updataItem(Item item);
 }
